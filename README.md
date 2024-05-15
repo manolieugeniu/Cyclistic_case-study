@@ -1,0 +1,599 @@
+---
+title: "Case Study: How does a bike-share navigate speedy success?"
+author: "Eugeniu Manoli"
+date: "14.05.2024"
+output:
+  html_document: default
+---
+This project serves as the capstone component of my Google Data Analytics Professional Certificate program and the first case study in my portfolio. I will utilize the R programming language and RStudio IDE for their robust statistical analysis capabilities and advanced data visualization tools.
+
+
+Scenario
+
+I am junior data analyst working on the marketing analyst team at Cyclistic, a virtual bike-share company in Chicago. 
+The director of marketing believes the company’s future success depends on maximizing the number of annual memberships. Therefore, my team wants to understand how casual riders and annual members use Cyclistic bikes differently. 
+From these insights, the marketing team will design a new strategy to convert casual riders into annual members. But first, Cyclistic executives must approve my recommendations, so they must be backed up with compelling data insights and professional data visualizations.
+
+To see full scenario and task description please click on this [link](https://www.coursera.org/learn/google-data-analytics-capstone/supplement/7PGIT/case-study-1-how-does-a-bike-share-navigate-speedy-success).
+
+The study consists of the 6 classic steps as they are: Ask, Prepare, Process, Analyze, Share and Act.
+Each step will be guided by questions, the answers to which will enhance comprehension of the task and issues at hand, ultimately leading towards addressing the main question. Using the advised by Coursera roadmap the project will include Key tasks and deliverables as well.
+
+#I. ASK
+
+These are the 3 main questions to guide the future marketing program: 
+1. How do annual members and casual riders use Cyclistic bikes differently?
+2. Why would casual riders buy Cyclistic annual memberships? 
+3. How can Cyclistic use digital media to influence casual riders to become members?
+
+Moreno - the director of marketing and my manager, has assigned the first question to answer: How do annual members and casual riders use Cyclistic bikes differently?
+
+Key tasks:
+
+•	Identify the problem 
+
+  The primary objective of every marketing department is to incentivize customers to make additional purchases or explore new products, ultimately driving sales growth. In this particular scenario, the director posits that the primary revenue and sales stem from member riders, suggesting that boosting their numbers is crucial for success. 
+  Therefore, it is imperative to analyze the factors and differences shaping and influencing these two customer segments, as well as assess the feasibility and viability of converting casual riders into members.
+  
+•	Determine key stakeholders
+
+  Cyclistic executive team, Lily Moreno: The director of marketing and my manager, Cyclistic marketing analytics team.
+
+
+
+Deliverable 
+
+• A clear statement of the business task
+Examine factors and differences shaping casual and member riders as distinct customer types.
+
+#II. PREPARE
+
+• Where is the data located? 
+
+Cyclistic’s historical trip data has been made public by Motivate International Inc. under this license [link](https://www.divvybikes.com/data-license-agreement) and can be found and downloaded here [link](https://divvy-tripdata.s3.amazonaws.com/index.html). 
+Note: The data sets have a different name because Cyclistic is a fictional company. Due to the data-privacy issues using riders’ personally identifiable information is prohibited.
+
+• Are there issues with bias or credibility in this data? Does the data ROCCC? 
+ - R(Reliable) - the company is virtual as well could be the data 
+ - O(Original) - ensured by Motivate International Inc. licence.
+ - C(Comprehennsive) - all 12 files are in place
+ - C(Current) - last 12 months data trip is used for analysis 
+ - C(Cited) - the information provenience have been just shared. 
+All rides have unique ride-id so data is unbiased. 
+
+• Is data integrity upheld? 
+All 12 files has same number and name of columns.
+
+• Are there any problems with the data?
+What data is missing? Is it critical for analysis?
+
+Key tasks:
+
+● Download data and store it appropriately.
+
+12 data sets have been downloaded and stored on my computer hard drive and here on Kaggle server. 
+
+● Identify how it`s data organized.
+
+The data is stored in CSV files. Each from 12 files contains one month trip data between April 2023 and March 2024. The data is organized horizontally using the long format and consists of the following 13 variables(columns): "ride_id", "rideable_type", "started_at", "ended_at", "start_station_name", "start_station_id", "end_station_name", "end_station_id", "start_lat", "start_lng", "end_lat", "end_lng", "member_casual".
+
+● Sort and filter the data.
+I selected the most recent and relevant data by choosing the last 12 complete months from the available data sets spanning April 2020 to March 2024.
+
+● Determine the credibility of the data.
+
+The data sets are specially made for this case study, allowing me to address business questions. However, data privacy restrictions prevent the use of personally identifiable rider information, hindering the ability to track individual riders taking multiple rides.
+
+I will not include the installation of packages in the code console as it creates issues with knitting.
+Install and load required packages in console.
+install.packages("readr")
+library(readr)
+install.packages("lubridate")
+library(lubridate)
+install.packages("janitor")
+library(janitor)
+install.packages("tidyverse")
+library(tidyverse)
+install.packages("tidyr")
+library(tidyr)
+install.packages("dplyr")
+library(dplyr)
+install.packages("skimr")
+library(skimr)
+install.packages("ggplot2")
+library(ggplot2)
+
+
+```{r}
+# import all data sets
+April_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202304-divvy-tripdata.csv")
+May_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202305-divvy-tripdata.csv")
+June_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202306-divvy-tripdata.csv")
+July_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202307-divvy-tripdata.csv")
+August_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202308-divvy-tripdata.csv")
+September_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202309-divvy-tripdata.csv")
+October_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202310-divvy-tripdata.csv")
+November_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202311-divvy-tripdata.csv")
+December_2023 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202312-divvy-tripdata.csv")
+January_2024 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202401-divvy-tripdata.csv")
+February_2024 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202402-divvy-tripdata.csv")
+March_2024 <- read_csv("C:/Users/manoleug/OneDrive - Mars Inc/Desktop/My docs/Google Data Analytics course/Case Study/Data Set/202403-divvy-tripdata.csv")
+```
+```{r}
+# Check imported data sets for consistency (number of columns should be the same, column names and data types should coincide).
+colnames(April_2023)
+colnames(May_2023)
+colnames(June_2023)
+colnames(July_2023)
+colnames(August_2023)
+colnames(September_2023)
+colnames(October_2023)
+colnames(November_2023)
+colnames(December_2023)
+colnames(January_2024)
+colnames(February_2024)
+colnames(March_2024)
+
+head(April_2023)
+head(May_2023)
+head(June_2023)
+head(July_2023)
+head(August_2023)
+head(September_2023)
+head(October_2023)
+head(November_2023)
+head(December_2023)
+head(January_2024)
+head(February_2024)
+head(March_2024)
+
+str(April_2023)
+str(May_2023)
+str(June_2023)
+str(July_2023)
+str(August_2023)
+str(September_2023)
+str(October_2023)
+str(November_2023)
+str(December_2023)
+str(January_2024)
+str(February_2024)
+str(March_2024)
+```
+At practical or theoretical Coursera courses was not given an example of how to consolidate data sets having different number of events(rows). The searching of this topic on internet resulted in finding the most appropriate function bind_rows() as it binds unequal counts in data sets.
+```{r}
+# Consolidate all 12 data sets in 1 data frame. 
+raw_data <- bind_rows(April_2023, May_2023, June_2023, July_2023, August_2023, September_2023, October_2023, November_2023, December_2023, January_2024, February_2024, March_2024)
+```
+```{r}
+# Check consolidated data frame
+colnames(raw_data)
+head(raw_data)
+str(raw_data)
+summary(raw_data)
+```
+#III. PROCESS
+In this step I will check and maintain data integrity and consistency using R Programming tools for data testing and cleaning.
+
+Key tasks:
+•	Check the data for errors
+•	Transform the data into the right type
+•	Document the cleaning process
+•	Choose your tools
+
+Deliverable
+• Documented process of testing and cleaning.
+• Clean data frame ready for analysis.
+```{r}
+# Check what specific data is stored in columns  
+unique(raw_data$rideable_type)
+unique(raw_data$start_station_name)
+unique(raw_data$start_station_id)
+unique(raw_data$end_station_name)
+unique(raw_data$end_station_id)
+unique(raw_data$member_casual)
+
+```
+```{r}
+# Check how many distinct stations there are
+raw_data %>% select(start_station_name) %>% n_distinct()
+raw_data %>% select(start_station_id) %>% n_distinct()
+raw_data %>% select(end_station_name) %>% n_distinct()
+raw_data %>% select(end_station_id) %>% n_distinct()
+```
+```{r}
+# Check how many NA records there are per column
+# ride_id
+sum(is.na(raw_data$ride_id))
+# rideable_type
+sum(is.na(raw_data$rideable_type))
+# started_at
+sum(is.na(raw_data$started_at))
+# ended_at
+sum(is.na(raw_data$ended_at))
+# start_station_name
+sum(is.na(raw_data$start_station_name))
+# start_station_id
+sum(is.na(raw_data$start_station_id))
+# end_station_name
+sum(is.na(raw_data$end_station_name))
+# end_station_id
+sum(is.na(raw_data$end_station_id))
+# start_lat
+sum(is.na(raw_data$start_lat))
+# start_lng
+sum(is.na(raw_data$start_lng))
+# end_lat
+sum(is.na(raw_data$end_lat))
+# end_lng
+sum(is.na(raw_data$end_lng))
+# member_casual
+sum(is.na(raw_data$member_casual))
+```
+There is a significant amount of missing data in the columns pertaining to station names and station IDs. Specifically, 15% of data is absent for start stations and 16% for end stations. This issue could potentially pose a critical threat to data integrity, resulting in erroneous decision-making, analysis delays, or necessitating the re-collection of data in certain instances. However, in this specific case, names of stations are not necessary for finding answers to main questions.
+Names and ids of stations are not the only inconsistent columns. End_lat (end latitude) and end_lng(end longitude) are missing ~0.13% of data which is not critical as the margin of error is not significant therefore these rows won`t be considered for analysis.
+
+```{r}
+filtered_data <-  filter(raw_data, !is.na(raw_data$end_lat) | raw_data$end_lat != "")
+# Check new data frame structure
+str(filtered_data)
+```
+The number of rows decreased from 5,750,177 to 5,742,611 or by 7566 as expected.
+```{r}
+# just an additional check to be sure then filtered data frame is clean
+sum(is.na(filtered_data$end_lat))
+sum(is.na(filtered_data$end_lng))
+```
+In order to be able to perform a detailed analysis by day, time, week day, month or season we need to add columns with split data from started_at column. There is no need to do the same for ended_at column as spent hours, days or months is given by the difference of between ended_at and strated_at.
+
+```{r}
+modified_data <- filtered_data %>% mutate(start_date = format(as.Date(started_at))) %>% mutate(start_time = format(as.POSIXct(started_at,format="%Y:%m:%d %H:%M:%S"),"%H:%M:%S")) %>% mutate(start_month = format(as.POSIXct(started_at,format="%Y:%m:%d %H:%M:%S"),"%B")) %>% mutate(start_weekday = weekdays(filtered_data$started_at))
+```
+```{r}
+# Adding a new column with calculated trip time in hours
+modified_data <- modified_data %>% 
+  mutate(ride_time = difftime(ended_at, started_at, units="hours"))
+# Transform values in numeric format
+modified_data$ride_time <- as.numeric(modified_data$ride_time)
+```
+
+```{r}
+# Check the new data frame to ensure that all new requested columns are in place and contains correct data
+tibble(modified_data)
+```
+Tibble is showing that first 10 given trips are much shorter than an hour so might be it`s worth to use minutes. In order to take the right decision is required to check maximum, mean and minimum values.
+
+```{r}
+max(modified_data$ride_time)
+mean(modified_data$ride_time)
+min(modified_data$ride_time)
+```
+The average trip period is almost a quarter and we have much higher values, therefore I consider leaving hours as time measurement unit. The minimum figure tells that there are negative values and makes me think that there could be NIL values as well. First of all I will check how many cases there are to have the understanding whether it`s critical or not and if needed to find the explanation.
+
+```{r}
+sum(modified_data$ride_time == 0)
+sum(modified_data$ride_time < 0)
+```
+The number of 0 and less cases is too low to represent a treat or have a significant influence on analysis and conclusions. However, it might be that company needs to register somehow the maintenance, charging or other operations downtime. Anyway this cases can`t be used in our analysis as not refer to the question asked.
+```{r}
+# Getting rid of rows that have NIL or negative values in column ride_time
+clean_data <- modified_data[!(modified_data$ride_time <= 0),]
+# Check the clean_data for NIL or negative values
+sum(clean_data$ride_time == 0)
+sum(clean_data$ride_time < 0)
+```
+The trip distance is not given, but the data frame contains latitude and longitude of the starting and ending points so the distance can be calculated using functions of geosphere packaging.
+
+install.packages("geosphere")
+library ("geosphere") 
+```{r}
+clean_data <- clean_data %>% rowwise() %>% mutate(ride_dist = geosphere::distHaversine( c(start_lng, start_lat), c(end_lng, end_lat)))
+# Transform ride_distance data from m in km
+clean_data <- clean_data %>% mutate(ride_dist = ride_dist/1000)
+```
+```{r}
+# Checking the obtained data
+max(clean_data$ride_dist)
+mean(clean_data$ride_dist)
+min(clean_data$ride_dist)
+sum(clean_data$ride_dist == 0)
+sum(clean_data$ride_dist < 0)
+```
+We have 288788 cases of 0km ride with time spent registered. This amount of data represents 5% and needs to be investigated.  
+```{r}
+# Investigate trip time for 0 trip distance cases
+filtered_ride_time <- clean_data %>% filter(ride_dist == 0) %>% arrange(-ride_time)
+tibble(filtered_ride_time)
+```
+```{r}
+print("min")
+min(filtered_ride_time$ride_time)
+print("average")
+mean(filtered_ride_time$ride_time)
+print("max")
+max(filtered_ride_time$ride_time)
+print("<1h")
+sum(filtered_ride_time$ride_time < 1)
+print(">1h")
+sum(filtered_ride_time$ride_time > 1)
+print(">4h")
+sum(filtered_ride_time$ride_time > 4)
+print(">12h")
+sum(filtered_ride_time$ride_time > 12)
+print(">24h")
+sum(filtered_ride_time$ride_time > 24)
+```
+The maximum time spent with no route is a full day - 38 cases (0,01%). The most time spent on 0km ride is less than an hour 90% and between 1h-4h represents 9%. In real situation I would dive deep to find the meaning of this unusual data but let`s admit that customers booked bikes, didn`t use and closed booking. 5% will not influence the result and I can analyse it at next step by customer type, bike type to have a better understanding of possible reasons and maybe can find some insights.
+
+Do not forget about maximum trip distance found of 9826.424 Km which seems to be suspicious.
+```{r}
+# Arrange table by ride distance in descending order
+clean_data <- clean_data %>% arrange(-ride_dist)
+tibble(clean_data)
+```
+Found just 3 cases of unrealistic trip distance (>9000km) caused by erroneous 0.00000 end latitude and longitude so will remove them from the data frame.
+```{r}
+# Verify if there a no more 0 values in latitude and longitude columns
+sum(clean_data$start_lat == 0)
+sum(clean_data$start_lng == 0)
+sum(clean_data$end_lat == 0)
+sum(clean_data$end_lng == 0)
+```
+```{r}
+# Eliminate rows
+clean_data <- clean_data[!(clean_data$end_lat == 0),]
+tibble(clean_data)
+```
+Cleaning report:
+- removed 1143 rows that have 0 trip time;
+- removed 321 rows that have negative trip time;
+- removed 3 rows that have no end latitude and longitude; 
+Total removed rows - 1467 (0,03%).
+
+
+#III. ANALYZE
+
+Guiding questions
+
+•	What surprises did you discover in the data?
+•	What trends or relationships have you found in the data?
+•	How do these insights answer your question or solve the problem?
+
+
+Key tasks
+
+•	Aggregate your data so it’s useful and accessible
+•	Organize and format your data
+•	Perform calculations
+•	Identify trends and relationships
+
+```{r}
+# Check data frame summary
+summary(clean_data)
+```
+```{r}
+# Check market share by customer type
+market_share <- clean_data %>%
+  group_by(member_casual) %>%
+  summarise(total_rides = length(ride_id)) %>%
+  mutate(share=total_rides/sum(total_rides)*100.0) %>%
+  arrange(desc(total_rides))
+tibble(market_share)
+ggplot(market_share, aes("", share, fill = member_casual)) +
+    geom_bar(width = 1, linewidth = 1, color = "white", stat = "identity") +
+    coord_polar("y") +
+    geom_text(aes(label = paste0(round(share), "%")), 
+              position = position_stack(vjust = 0.5)) +
+    labs(x = NULL, y = NULL, fill = NULL, 
+         title = "Market share by customer type") +
+    guides(fill = guide_legend(reverse = TRUE)) +
+    scale_fill_manual(values = c("#254290","#bcbcbc")) +
+    theme_classic() +
+    theme(axis.line = element_blank(),
+          axis.text = element_blank(),
+          axis.ticks = element_blank(),
+          plot.title = element_text(hjust = 0.5, color = "#666666"))
+```
+install.packages(scales)
+library(scales)
+```{r}
+# Check market share by customer and rideable types
+market_share_rideables <- clean_data %>%
+  group_by(member_casual,rideable_type) %>%
+  summarise(total_rides = length(ride_id)) %>%
+  mutate(share = total_rides / nrow(clean_data)) %>%
+  mutate(cumulative = cumsum(share))
+tibble(market_share_rideables)
+
+ggplot(market_share_rideables,aes(x=member_casual,y=share,fill=rideable_type))+geom_col(stat='identity') + geom_text(aes(x=member_casual,y=cumulative, label= paste0(round(share*100,digits=1),"%"), vjust=-0.5)) +   scale_y_continuous(labels = percent) + labs(title = "Market share by customer and rideable types", y = "Percent", x = "Customer type")
+```
+Observations:
+1. Member customers made almost twice rides than casual. This does not reflect the proportion between number of casual and member customers as all rides are hidden and may be caused by same customers.
+2. There are no member customers using docked bikes.
+3. The number of rides made by using docked bikes are small representing 1.2% and are used just by casual riders.
+4. Members use electric bikes as often as classic ones, just 0.9% in favor of electric bikes.
+5. Casual riders prefer a bit more classic bikes, electric bikes giving into classic bikes by 3.3%.
+
+##Comparison of member and casual customers by ride length
+```{r}
+df_ride_length <- clean_data %>%
+  group_by(member_casual) %>% 
+  summarise( max_ride_time = max(ride_time), mean_ride_time = mean(ride_time), min_ride_time = min(ride_time))
+tibble(df_ride_length)
+# member VS casual customers by ride length
+ggplot(df_ride_length,aes(member_casual, mean_ride_time, fill=mean_ride_time))+geom_col()+ labs(title = "Member VS casual by meand ride length")
+
+df_ride_length_bike_type <- clean_data %>%
+  group_by(member_casual,rideable_type) %>% 
+  summarise( max_ride_time = max(ride_time), mean_ride_time = mean(ride_time), min_ride_time = min(ride_time))
+# member VS casual customers by ride length and bike type
+ggplot(df_ride_length_bike_type,aes(member_casual, mean_ride_time, fill=mean_ride_time))+geom_col()+ labs(title = "Member VS casual by ride meand length and bike type")+facet_wrap(~rideable_type)
+```
+According maximum and mean data, seen by bike types used or as aggregate, it is obvious that casual customers take bikes for longer trips than members.
+
+##Comparison of member and casual customers by trip distance
+```{r}
+df_ride_dist <- clean_data %>%
+  group_by(member_casual) %>% 
+  summarise( max_ride_dist = max(ride_dist), mean_ride_dist = mean(ride_dist), min_ride_dist = min(ride_dist))
+tibble(df_ride_dist)
+
+df_ride_dist_bike_type <- clean_data %>%
+  group_by(member_casual,rideable_type) %>% 
+  summarise( max_ride_dist = max(ride_dist), mean_ride_dist = mean(ride_dist), min_ride_dist = min(ride_dist))
+
+# member VS casual customers by maximum ride distance
+ggplot(df_ride_dist,aes(member_casual, max_ride_dist, fill=max_ride_dist))+geom_col()+ labs(title = "Member VS casual by maximum ride distance")
+# member VS casual customers by maximum ride distance and bike type
+ggplot(df_ride_dist_bike_type,aes(member_casual, max_ride_dist, fill=max_ride_dist))+geom_col()+ labs(title = "Member VS casual by maximum ride distance and bike type")+facet_wrap(~rideable_type)
+
+# member VS casual customers by mean ride distance
+ggplot(df_ride_dist,aes(member_casual, mean_ride_dist, fill=mean_ride_dist))+geom_col()+ labs(title = "Member VS casual by mean ride distance")
+# member VS casual customers by mean ride distance and bike type
+ggplot(df_ride_dist_bike_type,aes(member_casual, mean_ride_dist, fill=mean_ride_dist))+geom_col()+ labs(title = "Member VS casual by mean ride distance and bike type")+facet_wrap(~rideable_type)
+```
+The most extensive journeys in terms of distance are undertaken by casual customers, showcasing variances of up to 10 kilometers. When comparing average metrics, the disparity is negligible, as both customer segments average a ride distance of 2.1 kilometers. Nevertheless, casual customers tend to traverse slightly longer distances when utilizing classic bikes, whereas members tend to cover marginally more kilometers when opting for electric bikes.
+
+##Comparison of member and casual customers by day time.
+
+```{r}
+# Group all start times by start hour
+clean_data <- clean_data %>% mutate(only_hour = format(as.POSIXct(started_at,format="%Y:%m:%d %H:%M:%S"),"%H"))
+
+```
+```{r}
+# Tibble and visual
+df_day_time <- clean_data %>%
+  group_by(member_casual, only_hour) %>%
+  summarise(total_rides = length(ride_id), .groups = 'drop')
+tibble(df_day_time)
+ggplot(df_day_time, aes(x=only_hour,y=total_rides,fill= member_casual))+geom_bar(stat='identity') + labs(x="Day time",y="Number of rides", title="Member VS casual customers by day time")+scale_y_continuous(labels = scales::comma)+facet_wrap(~member_casual, ncol = 1)
+```
+Findings:
+
+* Members commence their trips as early as 5 a.m., reaching peak activity between 7 a.m. and 9 a.m. for morning rides, and again peaking at 5 p.m. for afternoon rides, primarily between 4 p.m. and 7 p.m.
+
+* Casual customers initiate bike usage around 6 a.m., with usage gradually increasing until reaching its zenith at 5 p.m., followed by a gradual decline until 4 a.m. This timeframe marks the period of minimal ride activity for both customer types. Overall, casual members undertake the majority of their rides between 11 a.m. and 8 p.m.
+
+This picture might be different from one day to another so needs to be checked by both criteria day time and weekday. 
+
+##Comparison of member and casual customers by day time and week days.
+```{r}
+# Arrange weekdays in the right order
+clean_data$start_weekday <- factor(clean_data$start_weekday, c("Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday", "Sunday"))
+ggplot(clean_data, aes(x=start_weekday,fill= member_casual))+geom_bar() + labs(x="Weekday",y="Number of rides", title="Member VS casual customers by weekday")+facet_wrap(~member_casual)+scale_y_continuous(labels = scales::comma)+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.2))
+
+```
+Onservations:
+
+* The most favorite ride days for casual customers are Friday and weekend days. The most popular day being Saturday. Satuday the number of rides is double than work days while Fridays and Sundays register 50% more rides comparing to workdays Mon-Thur.
+* Members instead ride the most on workdays, middle of the week being the most popular. The graph shows that members use bikes on weekends as well but 33% less.  
+
+##Comparison of member and casual customers by day time and week days.
+```{r}
+ggplot(clean_data, aes(x=only_hour,fill= member_casual))+geom_bar() + labs(x="Day time",y="Number of rides", title="Member VS casual customers by day time and weekday")+facet_wrap(~start_weekday)+scale_y_continuous(labels = scales::comma)
+```
+The division by 2 criteria confirms the previous observations. Thus I will just rephrase them in few conclusions. 
+The disparity between weekdays and weekends is pronounced. Weekdays from Monday to Thursday have exactly same graphics and witness a substantial surge in usage between 7 a.m. to 9 a.m., and again from 4 p.m. to 7 p.m. This pattern suggests that members utilize the bike share system as part of their daily routine, likely for commuting purposes. Conversely, weekends, particularly Fridays, Saturdays, and Sundays, experience a significant spike in volume among casual riders. This observation suggests that casual riders predominantly utilize bike share services for recreational purposes during the weekends.
+
+##Comparison of member and casual customers by month.
+```{r}
+# Arrange months in the right order
+clean_data$start_month <- factor(clean_data$start_month, c("April", "May", "June", "July","August","September", "October","November", "December", "January", "February", "March"))
+ggplot(clean_data,aes(x=start_month,fill= member_casual)) + geom_bar(width=0.5, position = position_dodge(width=0.5)) +   labs(x="Month",y="Number of rides", title="Member VS casual customers by month")+ 
+  scale_y_continuous(labels = scales::comma)+theme(axis.text.x = element_text(angle = 45))
+```
+Bike usage peaks during the hottest months and declines during winter, a trend consistent across both customer segments.
+
+##Comparison of member and casual customers by map location where bikes are used.
+
+```{r}
+#Creating a data frame with coordinates for the most popular routes by customer types
+df_coorinates_member <- clean_data %>% 
+filter(start_lng != end_lng & start_lat != end_lat) %>% filter(member_casual == "member") %>%
+group_by(start_lng, start_lat, end_lng, end_lat, member_casual, rideable_type) %>%
+summarise(total_rides = n(),.groups="drop") %>% filter(total_rides > 100)
+
+df_coorinates_casual <- clean_data %>% 
+filter(start_lng != end_lng & start_lat != end_lat) %>% filter(member_casual == "casual") %>%
+group_by(start_lng, start_lat, end_lng, end_lat, member_casual, rideable_type) %>%
+summarise(total_rides = n(),.groups="drop") %>% filter(total_rides > 100)
+```
+
+First the ggmap packaging should be loaded. 
+How to load a mapp I found here[link](https://stackoverflow.com/questions/53179966/how-to-plot-locationslongitudealtitude-on-map-in-r) just instead of get_stamenmap() function now should be used get_stadiamap() as Stamen map tiles are now hosted by Stadia Maps. However, it won`t work without a registration and an API Key. The registration can be done here [link](https://client.stadiamaps.com/signup/).
+
+Install ggmap pack:
+
+install.packages("ggmap")
+library(ggmap)
+```{r}
+# Chicago map adding
+register_stadiamaps("7ad031fb-6854-4d81-83e1-a37489044c37")
+chicago <- c(left = -88.0225, bottom = 41.5949, right = -87.2713, top = 42.0677)
+chicago_map <- get_stadiamap(bbox = chicago, zoom = 10, maptype = "stamen_toner")
+```
+```{r}
+# Visualize rides of casual customers
+ggmap(chicago_map,darken = c(0.1, "white")) +
+   geom_point(df_coorinates_casual, mapping = aes(x = start_lng, y = start_lat, color=rideable_type), size = 2) +
+   coord_fixed(0.8) +
+   labs(title = "Routes of casual customers",x=NULL,y=NULL) +
+   theme(legend.position="none")
+
+#Visualize rides of member customers
+ggmap(chicago_map,darken = c(0.1, "white")) +
+    geom_point(df_coorinates_member, mapping = aes(x = start_lng, y = start_lat, color=rideable_type), size = 2) +  
+    coord_fixed(0.8) +
+    labs(title = "Routes of member customers",x=NULL,y=NULL) +
+    theme(legend.position="none")
+```
+Insights:
+Casual riders predominantly frequent coastal and city center areas, whereas members exhibit a broader and more extensive geographic spread, suggesting that they likely reside outside the city center but commute there for work purposes. Casual riders, on the other hand, appear to spend more time in urban hubs or coastal regions, either for leisure activities or sightseeing, particularly evident among tourists.
+
+#IV. SHARE
+
+According scenario the analysis will be presented to Cyclistic marketing analytics team, director of marketing and Cyclistic executive team. The best way is to prepare 2 presentations: the detailed version for the marketing analytics team and the concise one for director of marketing and Cyclistic executive team. The shorter version will contain the main question, most important difficulties encountered during the process, just visuals, findings that are relevant to answer the question and my recommendations. For analytics team the presentation may be as Notebook or PDF file but for manager and executives will prepare a PDF file. 
+Here it is presented as an RStudio Notebook.
+
+
+Main insights:
+1. Member customers made almost twice rides than casual. This does not reflect the proportion between number of casual and member customers as all rides are hidden and may be caused by same customers.
+2. The number of rides made by using docked bikes are small representing 1.2% and are used just by casual riders.
+3. Members use electric bikes as often as classic ones, just 0.9% in favor of electric bikes.
+4. Casual riders prefer a bit more classic bikes, electric bikes giving into classic bikes by 3.3%.
+5. Casual customers take bikes for longer trips and  than members.
+6. Casual customers tend to traverse slightly longer distances when utilizing classic bikes, whereas members tend to cover marginally more kilometers when opting for electric bikes.
+7. Most important ride time for members are weekdays from Monday to Thursday between 7 a.m. to 9 a.m., and from 4 p.m. to 7 p.m., likely for commuting purposes. 
+8. Casual riders predominantly utilize bike share services for recreational purposes during the weekends.
+9. Casual riders predominantly frequent coastal and city center areas, either for leisure activities or sightseeing.
+10. Memebers use bikes to commute for work purposes.
+
+#V. ACT
+The implementation phase will be overseen by Cyclistic's executive team, including Director of Marketing Lily Moreno, and the Marketing Analytics team, leveraging insights from this analysis.
+
+Recommendations based on analysis:
+
+* Offer seasonal weekends membership that will motivate casual users to book in advance, become members and benefit from lower prices.
+* Develop detailed routes with nice views and see sights to promote bike rides and increase number of casual rides.
+* Organize bikes club for members where they can travel and meet each other during the weekends. This will increase number of rides and sales.
+* Marketing campaigns on YouTube, social networks and on place are required to explain benefits of membership and other offers.
+
+
+Additional proposals:
+
+* Docked bikes are used just by casual riders. Need more data to understand why there are no members to use them.
+If people are not aware, then a campaign for people with special needs is required, explaining what the membership offers would change this gap. If known, then what is the reason they don`t become members.
+* Additional data is needed to analyze which groups are most and less profitable.
+* Additional data is needed to analyze data by specific customer instead of number of rides. This way we would understand better the customers structure and rides recurrence.
+
+
+Resources:
+* Courcera Google Data Analytics Course
+* RStudio
+* Kaggle
+* https://stackoverflow.com/
+* time :) 
+
+I aimed for thoroughness to facilitate others undertaking similar projects. Despite the challenges of finding, learning, adjusting, and compiling codes, the process was rewarding, with many insightful nights spent learning. I anticipate this case will serve as a strong foundation for my career and enhance my portfolio.
+Stay hungry for knowledge and never satisfied of how things are! :)
